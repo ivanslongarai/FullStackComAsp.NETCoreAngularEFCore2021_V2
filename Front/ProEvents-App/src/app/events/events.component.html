@@ -1,6 +1,60 @@
-<h1>Eventos de Components</h1>
-<div *ngFor="let event of events">
-    <p><b>Tema: </b> {{event.subject}}</p>
-    <p><b>Local: </b>{{event.local}}</p>
-    <hr>
+<h2>Eventos</h2>
+<hr>    
+
+<div class="form-inline">
+    <div class="form-group mb-2">
+        <label class= "mr-2" for="">Filtro</label>
+        <input type="text" class="form-control mr-2" placeholder="buscar"
+        [(ngModel)]="filterBy"> <!--two way databinding-->
+    </div>
 </div>
+
+<!--<h6>Filtrando por: {{filterBy}}</h6>-->
+
+<table class="table table-striped">
+    <thead class="thead-dark">
+        <tr>           
+            <th><button class="btn btn-outline-light btn-sm" (click)="showImages = !showImages"
+                [style.width.px]="imgWidth"
+                [style.margin.px]="imgMargin"                                              
+                data-toggle="tooltip" data-placement="bottom"                 
+                title="{{!showImages ? 'Ocultar imagens' : 'Mostrar imagens'}}">                                
+                <i class="{{!showImages ? 'fa fa-eye-slash' : 'fa fa-eye'}}"> Img</i>
+            </button></th>
+            <th>#</th>            
+            <th>Tema</th>
+            <th>Local</th>
+            <th>Data</th>
+            <th>Qtd Pessoas</th>
+            <th>Lote</th>
+            <th>Opções</th>
+        </tr>
+    </thead>
+    <tbody *ngIf="events && events.length > 0">  <!--Structural Directives *ngIf *ngFor -->    
+        <tr *ngFor="let event of filteredEvents">
+            <td> <!--Properties Bindings [style.width.px] -->
+                <img src="/assets/{{event.imageUrl}}" alt="" [collapse]="showImages" [isAnimated]="true"
+                    [style.width.px]="imgWidth"
+                    [style.margin.px]="imgMargin" 
+                >
+            </td>
+            <td>{{event.eventId}}</td>  <!--Interpolation {{event.eventId}}-->          
+            <td>{{event.subject}}</td>
+            <td>{{event.local}}</td>
+            <td>{{event.eventDate}}</td>
+            <td>{{event.amountPeople}}</td>
+            <td>{{event.lot}}</td>
+            <td>
+                <button type="button" class="btn btn-primary btn-sm mr-2">Editar</button>
+                <button type="button" class="btn btn-danger btn-sm">Excluir</button>
+            </td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="8" *ngIf="!filteredEvents || filteredEvents.length === 0">
+                <h4 class="text-center">Nenhum Evento Encontrado</h4>
+            </td>
+        </tr>
+    </tfoot>
+</table>
