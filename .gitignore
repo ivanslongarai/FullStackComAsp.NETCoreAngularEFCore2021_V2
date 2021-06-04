@@ -9,7 +9,7 @@ obj
 /Resources/Images
 
 #Database
-ProAgil.db
+ProEvents.db
 
 # compiled output
 /dist
