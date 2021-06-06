@@ -1,5 +1,10 @@
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef } from '@angular/core';
+
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { ToastrService } from 'ngx-toastr';
+
+import { EventService } from '../services/event.service';
+import { Event } from '../models/Event';
 
 @Component({
   selector: 'app-events',
@@ -7,47 +12,80 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./events.component.scss'],
 })
 export class EventsComponent implements OnInit {
-  
-  public events: any = [];
-  public filteredEvents: any = [];
+  public modalRef!: BsModalRef;
+  public events: Event[] = [];
+  public filteredEvents: Event[] = [];
 
-  public imgWidth: number = 150;
-  public imgMargin: number = 2;
-  public showImages: boolean = false;
-  private _filterBy: string = '';
+  public imgWidth = 150;
+  public imgMargin = 2;
+  
+  private privateShowImage = false;
+  private filteredBy = '';
 
   public get filterBy(): string {
-    return this._filterBy;
+    return this.filteredBy;
   }
-  
+
   public set filterBy(value: string) {
-    this._filterBy = value;
-    this.filteredEvents = (this.filterBy ? this.filterEvents(this.filterBy) : this.events);
+    this.filteredBy = value;
+    this.filteredEvents = this.filterBy
+      ? this.filterEvents(this.filterBy)
+      : this.events;
   }
 
-  constructor(private http: HttpClient) {}
+  constructor(
+      private eventService : EventService, 
+      private modalService : BsModalService, 
+      private toastr: ToastrService) {
 
-  ngOnInit(): void {
+  }
+
+  public ngOnInit(): void {
     this.getEvents();
   }
 
-  getEvents() {
-    this.http.get(`https://localhost:5001/api/Events`).subscribe(
-      (response) => {
-        this.events = response; 
-        this.filteredEvents = response
-      },
-      (error) => console.log(error)
+  public getEvents() : void {
+    this.eventService.getEvents().subscribe(
+      {
+        next: (ev : Event[]) => 
+        {
+          this.events = ev;
+          this.filteredEvents = ev;
+        },
+        error: (error : any) => console.log(error)
+      }
     );
   }
 
-  filterEvents(filterBy : string) : any {
+  public filterEvents(filterBy: string): Event[] {
     filterBy = filterBy.toLocaleLowerCase();
     return this.events.filter(
-      (e: { subject: string; local: string }) => 
-        e.subject.toLocaleLowerCase().indexOf(filterBy) !== -1 || 
+      (e : Event) =>
+        e.subject.toLocaleLowerCase().indexOf(filterBy) !== -1 ||
         e.local.toLocaleLowerCase().indexOf(filterBy) !== -1
-      );    
+    );
   }
 
-}
+  public setImageVisibility() : void {
+    this.privateShowImage = !this.privateShowImage;
+  }
+
+  public getImageVisibility() : boolean {
+    return this.privateShowImage;
+  }
+
+  public openModal(template: TemplateRef<any>) {
+    this.modalRef = this.modalService.show(template, {class: 'modal-sm'});
+  }
+ 
+  public confirmDelete(): void {
+    this.modalRef.hide();   
+    this.toastr.success("Evento excluído com sucesso", "Informação");
+  }
+ 
+  public declineDelete(): void {
+    this.modalRef.hide();
+    this.toastr.warning("Exclusão cancelada", "Informação");
+  }
+  
+}  

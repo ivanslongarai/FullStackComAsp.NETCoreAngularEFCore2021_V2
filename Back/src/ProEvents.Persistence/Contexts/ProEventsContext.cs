@@ -28,7 +28,6 @@ namespace ProEvents.Persistence.Contexts
                 .HasMany(s => s.SocialNetworks)
                 .WithOne(sn => sn.Speaker)
                 .OnDelete(DeleteBehavior.Cascade);                
-        }
-         
+        }        
     }
 }

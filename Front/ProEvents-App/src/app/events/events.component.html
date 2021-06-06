@@ -14,12 +14,11 @@
 <table class="table table-striped">
     <thead class="thead-dark">
         <tr>           
-            <th><button class="btn btn-outline-light btn-sm" (click)="showImages = !showImages"
+            <th><button class="btn btn-outline-light btn-sm" (click)="setImageVisibility()"
                 [style.width.px]="imgWidth"
                 [style.margin.px]="imgMargin"                                              
-                data-toggle="tooltip" data-placement="bottom"                 
-                title="{{!showImages ? 'Ocultar imagens' : 'Mostrar imagens'}}">                                
-                <i class="{{!showImages ? 'fa fa-eye-slash' : 'fa fa-eye'}}"> Img</i>
+                data-toggle="tooltip" data-placement="bottom">                                
+                <i class="{{!getImageVisibility() ? 'fa fa-eye-slash' : 'fa fa-eye'}}"> {{!getImageVisibility() ? ' Ocultar imagens' : ' Mostrar imagens'}}</i>
             </button></th>
             <th>#</th>            
             <th>Tema</th>
@@ -33,20 +32,26 @@
     <tbody *ngIf="events && events.length > 0">  <!--Structural Directives *ngIf *ngFor -->    
         <tr *ngFor="let event of filteredEvents">
             <td> <!--Properties Bindings [style.width.px] -->
-                <img src="/assets/{{event.imageUrl}}" alt="" [collapse]="showImages" [isAnimated]="true"
+                <img src="/assets/{{event.imageUrl}}" alt="" [collapse]="getImageVisibility()" [isAnimated]="true"
                     [style.width.px]="imgWidth"
                     [style.margin.px]="imgMargin" 
                 >
             </td>
-            <td>{{event.eventId}}</td>  <!--Interpolation {{event.eventId}}-->          
+            <td>{{event.id}}</td>  <!--Interpolation {{event.eventId}}-->          
             <td>{{event.subject}}</td>
             <td>{{event.local}}</td>
-            <td>{{event.eventDate}}</td>
-            <td>{{event.amountPeople}}</td>
-            <td>{{event.lot}}</td>
+            <td>{{event.date | HelperDateTimeFormatPipe}}</td>
+            <td>{{event.amountOfPeople}}</td>
+            <td>{{event.lots[0].name | uppercase}}</td>
             <td>
-                <button type="button" class="btn btn-primary btn-sm mr-2">Editar</button>
-                <button type="button" class="btn btn-danger btn-sm">Excluir</button>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary btn-sm mr-1" tooltip="Editar">
+                        <i class="fa fa-edit"></i>
+                    </button>
+                    <button type="button" class="btn btn-danger btn-sm" tooltip="Excluir" (click)="openModal(templateDelete)">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </div>
             </td>
         </tr>
     </tbody>
@@ -58,3 +63,11 @@
         </tr>
     </tfoot>
 </table>
+
+<ng-template #templateDelete>
+    <div class="modal-body text-center">
+      <p>Você tem certeza que deseja excluir o evento?</p>
+      <button type="button" class="btn btn-default" (click)="confirmDelete()" >Sim</button>
+      <button type="button" class="btn btn-primary" (click)="declineDelete()" >Não</button>
+    </div>
+  </ng-template>
