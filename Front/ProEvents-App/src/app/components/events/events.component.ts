@@ -3,8 +3,9 @@ import { Component, OnInit, TemplateRef } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
 
-import { EventService } from '../services/event.service';
-import { Event } from '../models/Event';
+import { EventService } from '../../services/event.service';
+import { Event } from '../../models/Event';
+import { LoadingService } from '../../services/loading.service';
 
 @Component({
   selector: 'app-events',
@@ -15,6 +16,8 @@ export class EventsComponent implements OnInit {
   public modalRef!: BsModalRef;
   public events: Event[] = [];
   public filteredEvents: Event[] = [];
+
+  loading$ = this.loader.loading$;
 
   public imgWidth = 150;
   public imgMargin = 2;
@@ -36,12 +39,14 @@ export class EventsComponent implements OnInit {
   constructor(
       private eventService : EventService, 
       private modalService : BsModalService, 
-      private toastr: ToastrService) {
+      private toastr: ToastrService,
+      public loader : LoadingService) {
 
   }
 
   public ngOnInit(): void {
     this.getEvents();
+    this.loader.show();
   }
 
   public getEvents() : void {
@@ -52,7 +57,12 @@ export class EventsComponent implements OnInit {
           this.events = ev;
           this.filteredEvents = ev;
         },
-        error: (error : any) => console.log(error)
+        error: (error : any) => console.log(error),
+        complete : () => {
+          setTimeout(() => {
+            this.loader.hide();
+          }, 1000);        
+        }
       }
     );
   }
