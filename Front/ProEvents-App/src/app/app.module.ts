@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA  } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -22,8 +22,13 @@ import { TitleComponent } from './shared/title/title.component';
 import { EventsComponent } from './components/events/events.component';
 import { SpeakersComponent } from './components/speakers/speakers.component';
 import { ContactsComponent } from './components/contacts/contacts.component';
-import { ProfileComponent } from './components/profile/profile.component';
+import { ProfileComponent } from './components/user/profile/profile.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { EventDetailComponent } from './components/events/event-detail/event-detail.component';
+import { EventListComponent } from './components/events/event-list/event-list.component';
+import { UserComponent } from './components/user/user/user.component';
+import { LoginComponent } from './components/user/login/login.component';
+import { RegistrationComponent } from './components/user/registration/registration.component';
 
 import { EventService } from './services/event.service';
 import { DateTimeFormatPipe } from './helpers/DateTimeFormat.pipe';
@@ -39,6 +44,11 @@ import { DateTimeFormatPipe } from './helpers/DateTimeFormat.pipe';
     ContactsComponent,
     ProfileComponent,
     DashboardComponent,
+    EventDetailComponent,
+    EventListComponent,
+    UserComponent,
+    LoginComponent,
+    RegistrationComponent
    ],
   imports: [
     BrowserModule,
@@ -58,7 +68,10 @@ import { DateTimeFormatPipe } from './helpers/DateTimeFormat.pipe';
       positionClass: 'toast-top-right',
       preventDuplicates: true,
       progressBar: true
-    }),    
+    }),  
+  ],
+  schemas: [
+    CUSTOM_ELEMENTS_SCHEMA
   ],
   providers: [EventService],
   bootstrap: [AppComponent]
