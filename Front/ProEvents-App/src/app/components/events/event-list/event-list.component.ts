@@ -3,9 +3,9 @@ import { Component, OnInit, TemplateRef } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
 
-import { EventService } from '../../../services/event.service';
-import { Event } from '../../../models/Event';
-import { LoadingService } from '../../../services/loading.service';
+import { EventService } from '@app/services/event.service';
+import { Event } from '@app/models/Event';
+import { LoadingService } from '@app/services/loading.service';
 import { Router } from '@angular/router';
 
 @Component({
