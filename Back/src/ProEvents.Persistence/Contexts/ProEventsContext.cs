@@ -8,7 +8,6 @@ namespace ProEvents.Persistence.Contexts
         public ProEventsContext(DbContextOptions<ProEventsContext> options) : base(options)
         {           
         }
-
         public DbSet<Event> Events { get; set; }
         public DbSet<Lot> Lots { get; set; }
         public DbSet<Speaker> Speakers { get; set; }

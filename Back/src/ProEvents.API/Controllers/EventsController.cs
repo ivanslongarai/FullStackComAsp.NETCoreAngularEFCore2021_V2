@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProEvents.Application.Contracts;
-using ProEvents.Domain;
+using ProEvents.Application.Dtos;
 
 namespace ProEvents.API.Controllers
 {
@@ -27,7 +27,7 @@ namespace ProEvents.API.Controllers
                 var events = await _eventService.GetAllEventsAsync(true);    
                 
                 if(events == null){
-                    return NotFound("Events is empty");
+                    return NoContent();
                 }
 
                 return Ok(events);                
@@ -48,7 +48,7 @@ namespace ProEvents.API.Controllers
                 var _event = await _eventService.GetEventByIdAsync(id, true);    
                 
                 if(_event == null){
-                    return NotFound("Event by id not found");
+                    return NoContent();
                 }
 
                 return Ok(_event);                
@@ -68,7 +68,7 @@ namespace ProEvents.API.Controllers
                 var _event = await _eventService.GetEventsBySubjectAsync(subject, true);    
                 
                 if(_event == null){
-                    return NotFound("Events by subject not found");
+                    return NoContent();
                 }
 
                 return Ok(_event);                
@@ -81,14 +81,14 @@ namespace ProEvents.API.Controllers
         }        
 
         [HttpPost]
-        public async Task<IActionResult> Post(Event model)
+        public async Task<IActionResult> Post(EventDto model)
         {
             try
             {
                 var _event = await _eventService.AddEvent(model);    
                 
                 if(_event == null){
-                    return BadRequest("Error in trying to add the event");
+                    return NoContent();
                 }
 
                 return Ok(_event);                
@@ -101,7 +101,7 @@ namespace ProEvents.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, Event model)
+        public async Task<IActionResult> Put(int id, EventDto model)
         {
             try
             {
@@ -110,7 +110,7 @@ namespace ProEvents.API.Controllers
                 var _event = await _eventService.UpdateEvent(id, model);    
                 
                 if(_event == null){
-                    return BadRequest("Error in trying to update the event");
+                    return NoContent();
                 }
 
                 return Ok(_event);                
@@ -127,6 +127,11 @@ namespace ProEvents.API.Controllers
         {
             try
             {                
+
+                var _event = await _eventService.GetEventByIdAsync(id, true);
+                if (_event == null)
+                    return NoContent();
+
                 var isDeleted = await _eventService.DeleteEvent(id);    
                 
                 if(isDeleted == false){

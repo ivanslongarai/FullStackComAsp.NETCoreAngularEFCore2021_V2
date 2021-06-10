@@ -10,6 +10,8 @@ using ProEvents.Application.Contracts;
 using ProEvents.Persistence.ConcreteClasses;
 using ProEvents.Persistence.Contexts;
 using ProEvents.Persistence.Contracts;
+using AutoMapper;
+using System;
 
 namespace ProEvents.API
 {
@@ -33,6 +35,8 @@ namespace ProEvents.API
             services.AddControllers().AddNewtonsoftJson(x =>
                 x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
             );
+
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             
             services.AddScoped<IEventService, EventService>();
             services.AddScoped<IGennericPersistence, GennericPersistence>();

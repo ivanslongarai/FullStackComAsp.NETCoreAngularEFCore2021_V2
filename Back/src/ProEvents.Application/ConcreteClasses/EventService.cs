@@ -1,8 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using ProEvents.Application.Contracts;
+using ProEvents.Application.Dtos;
 using ProEvents.Domain;
 using ProEvents.Persistence.Contracts;
+using AutoMapper;
 
 namespace ProEvents.Application.ConcreteClasses
 {
@@ -10,20 +13,28 @@ namespace ProEvents.Application.ConcreteClasses
     {
         private readonly IGennericPersistence _gennericPersistence;
         private readonly IEventPersistence _eventPersistence;
-        public EventService(IGennericPersistence gennericPersistence, IEventPersistence eventPersistence)
+        private readonly IMapper _mapper;
+
+        public EventService(
+            IGennericPersistence gennericPersistence, 
+            IEventPersistence eventPersistence, 
+            IMapper mapper)
         {
             _eventPersistence = eventPersistence;
+            _mapper = mapper;
             _gennericPersistence = gennericPersistence;
 
         }
-        public async Task<Event> AddEvent(Event model)
+        public async Task<EventDto> AddEvent(EventDto model)
         {
             try
             {
-                _gennericPersistence.Add<Event>(model);
+                var _addEvent  = _mapper.Map<Event>(model);
+                _gennericPersistence.Add<Event>(_addEvent);
 
                 if(await _gennericPersistence.SaveChangesAsync()){
-                    return await _eventPersistence.GetEventByIdAsync(model.Id, false);  
+                   var _eventReturn = _mapper.Map<EventDto>(await _eventPersistence.GetEventByIdAsync(_addEvent.Id, false));
+                   return _eventReturn;  
                 }
 
                 return null;
@@ -35,7 +46,7 @@ namespace ProEvents.Application.ConcreteClasses
             }
         }
 
-        public async Task<Event> UpdateEvent(int eventId, Event model)
+        public async Task<EventDto> UpdateEvent(int eventId, EventDto model)
         {
             try
             {
@@ -46,10 +57,12 @@ namespace ProEvents.Application.ConcreteClasses
 
                 model.Id = eventId;
 
-                _gennericPersistence.Update(model);            
+                var _updateEvent = _mapper.Map<Event>(model);
+
+                _gennericPersistence.Update(_updateEvent);            
 
                 if(await _gennericPersistence.SaveChangesAsync()){
-                    return await _eventPersistence.GetEventByIdAsync(model.Id, false);  
+                   return _mapper.Map<EventDto>(await _eventPersistence.GetEventByIdAsync(_updateEvent.Id, false));
                 }
 
                 return null;
@@ -85,7 +98,7 @@ namespace ProEvents.Application.ConcreteClasses
             }            
         }        
 
-        public async Task<Event[]> GetAllEventsAsync(bool includeSpeakers = false)
+        public async Task<EventDto[]> GetAllEventsAsync(bool includeSpeakers = false)
         {
             try
             {
@@ -94,7 +107,9 @@ namespace ProEvents.Application.ConcreteClasses
                 if(_events == null)
                     return null;
 
-                return _events;
+                var result =_mapper.Map<EventDto[]>(_events);
+
+                return result;
                 
             }
             catch (Exception ex)
@@ -104,7 +119,7 @@ namespace ProEvents.Application.ConcreteClasses
             }
         }
 
-        public async Task<Event> GetEventByIdAsync(int idEvent, bool includeSpeakers = false)
+        public async Task<EventDto> GetEventByIdAsync(int idEvent, bool includeSpeakers = false)
         {
             try
             {
@@ -113,7 +128,9 @@ namespace ProEvents.Application.ConcreteClasses
                 if(_event == null)
                     return null;
 
-                return _event;
+                var result =_mapper.Map<EventDto>(_event);
+
+                return result;
                 
             }
             catch (Exception ex)
@@ -123,7 +140,7 @@ namespace ProEvents.Application.ConcreteClasses
             }
         }
 
-        public async Task<Event[]> GetEventsBySubjectAsync(string subject, bool includeSpeakers = false)
+        public async Task<EventDto[]> GetEventsBySubjectAsync(string subject, bool includeSpeakers = false)
         {
             try
             {
@@ -132,7 +149,9 @@ namespace ProEvents.Application.ConcreteClasses
                 if(_events == null)
                     return null;
 
-                return _events;
+                var result =_mapper.Map<EventDto[]>(_events);
+
+                return result;
                 
             }
             catch (Exception ex)
