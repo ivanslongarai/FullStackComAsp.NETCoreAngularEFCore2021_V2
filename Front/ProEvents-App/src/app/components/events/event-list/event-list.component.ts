@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-event-list',
   templateUrl: './event-list.component.html',
-  styleUrls: ['./event-list.component.scss']
+  styleUrls: ['./event-list.component.scss'],
 })
 export class EventListComponent implements OnInit {
   public modalRef!: BsModalRef;
@@ -22,7 +22,8 @@ export class EventListComponent implements OnInit {
 
   public imgWidth = 150;
   public imgMargin = 2;
-  
+  public eventId!: number;
+
   private privateShowImage = false;
   private filteredBy = '';
 
@@ -38,68 +39,83 @@ export class EventListComponent implements OnInit {
   }
 
   constructor(
-      private eventService : EventService, 
-      private modalService : BsModalService, 
-      private toastr: ToastrService,
-      public loader : LoadingService,
-      private router : Router ) {}
+    private eventService: EventService,
+    private modalService: BsModalService,
+    private toastr: ToastrService,
+    public loader: LoadingService,
+    private router: Router
+  ) {}
 
   public ngOnInit(): void {
     this.getEvents();
     this.loader.show();
   }
 
-  public getEvents() : void {
-    this.eventService.getEvents().subscribe(
-      {
-        next: (ev : Event[]) => 
-        {
-          this.events = ev;
-          this.filteredEvents = ev;
-        },
-        error: (error : any) => console.log(error),
-        complete : () => {
-          setTimeout(() => {
-            this.loader.hide();
-          }, 500);        
-        }
-      }
-    );
+  public getEvents(): void {
+    this.eventService.getEvents().subscribe({
+      next: (ev: Event[]) => {
+        this.events = ev;
+        this.filteredEvents = ev;
+      },
+      error: (error: any) => {
+        console.log(error);
+        this.loader.hide();
+        this.toastr.error('Erro ao carregar os eventos');
+      },
+      complete: () => {
+        setTimeout(() => {
+          this.loader.hide();
+        }, 500);
+      },
+    });
   }
 
   public filterEvents(filterBy: string): Event[] {
     filterBy = filterBy.toLocaleLowerCase();
     return this.events.filter(
-      (e : Event) =>
+      (e: Event) =>
         e.subject.toLocaleLowerCase().indexOf(filterBy) !== -1 ||
         e.local.toLocaleLowerCase().indexOf(filterBy) !== -1
     );
   }
 
-  public setImageVisibility() : void {
+  public setImageVisibility(): void {
     this.privateShowImage = !this.privateShowImage;
   }
 
-  public getImageVisibility() : boolean {
+  public getImageVisibility(): boolean {
     return this.privateShowImage;
   }
 
-  public openModal(template: TemplateRef<any>) {
-    this.modalRef = this.modalService.show(template, {class: 'modal-sm'});
+  public openModal(pEvent: any, template: TemplateRef<any>, eventId: number) {
+    this.eventId = eventId;
+    pEvent.stopPropagation();
+    this.modalRef = this.modalService.show(template, { class: 'modal-sm' });
   }
- 
+
   public confirmDelete(): void {
-    this.modalRef.hide();   
-    this.toastr.success("Evento excluído com sucesso", "Informação");
+    this.modalRef.hide();
+    this.eventService.deleteEvent(this.eventId).subscribe(
+      (result: any) => {
+        if ((result.message = 'Deleted')) {
+          console.log(result);
+          this.toastr.success('Evento excluído com sucesso', 'Informação');
+          this.getEvents();
+        }
+      },
+      (error) => {
+        this.toastr.error('Erro ao excluir Evento');
+      },
+      () => {}
+    );
   }
- 
+
   public declineDelete(): void {
     this.modalRef.hide();
-    this.toastr.warning("Exclusão cancelada", "Informação");
-  }  
-
-  public eventDetail(id : number) {
-    this.router.navigate([`events/detail/${id}`])
+    this.toastr.warning('Exclusão cancelada', 'Informação');
   }
 
+  public eventDetail(id: number) {
+    this.router.navigate([`events/detail/${id}`]);
+  }
 }

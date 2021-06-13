@@ -138,7 +138,7 @@ namespace ProEvents.API.Controllers
                     return BadRequest("Error in trying to delete the event");
                 }
 
-                return Ok("Deleted");                
+                return Ok(new { message= "Deleted"} );                
             }
             catch (Exception ex)
             {                

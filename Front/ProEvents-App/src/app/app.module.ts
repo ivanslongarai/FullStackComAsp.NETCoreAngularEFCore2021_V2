@@ -8,6 +8,9 @@ import { AppRoutingModule } from './app-routing.module';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatButtonModule } from '@angular/material/button';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker'; 
+import { defineLocale} from 'ngx-bootstrap/chronos';
+import { ptBrLocale } from 'ngx-bootstrap/locale'; 
 
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
@@ -33,6 +36,8 @@ import { RegistrationComponent } from './components/user/registration/registrati
 import { EventService } from './services/event.service';
 import { DateTimeFormatPipe } from './helpers/DateTimeFormat.pipe';
 
+defineLocale('pt-br', ptBrLocale);
+
 @NgModule({
   declarations: [	
     AppComponent,
@@ -48,7 +53,7 @@ import { DateTimeFormatPipe } from './helpers/DateTimeFormat.pipe';
     EventListComponent,
     UserComponent,
     LoginComponent,
-    RegistrationComponent
+    RegistrationComponent,
    ],
   imports: [
     BrowserModule,
@@ -63,7 +68,8 @@ import { DateTimeFormatPipe } from './helpers/DateTimeFormat.pipe';
     BsDropdownModule.forRoot(),
     MatToolbarModule,
     MatProgressSpinnerModule,
-    MatButtonModule,        
+    MatButtonModule,     
+    BsDatepickerModule.forRoot(),   
     ToastrModule.forRoot({
       timeOut: 3000,
       positionClass: 'toast-top-right',

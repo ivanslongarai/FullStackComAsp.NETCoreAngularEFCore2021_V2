@@ -9,7 +9,7 @@
           <input 
             type="text" 
             class="form-control"
-            [ngClass]="{'is-invalid': f.subject.errors && f.subject.touched}"
+            [ngClass]="cssValidator(f.subject)"
             formControlName="subject" 
             placeholder="Tema"
           >
@@ -33,7 +33,7 @@
 
           <input type="text" 
             class="form-control" 
-            [ngClass]="{'is-invalid': f.local.errors && f.local.touched}"
+            [ngClass]="cssValidator(f.local)"
             formControlName="subject" 
             formControlName="local" 
             placeholder="Local"
@@ -51,9 +51,11 @@
           
           <input type="datetime" 
             class="form-control" 
-            [ngClass]="{'is-invalid': f.date.errors && f.date.touched}"            
+            [ngClass]="cssValidator(f.date)"           
             formControlName="date" 
-            placeholder="Data Evento"
+            placeholder="Data Evento" bsDatepicker
+            [bsConfig]="bsConfig"
+            
           >
 
           <div *ngIf="f.date.errors?.required" class="invalid-feedback">
@@ -69,7 +71,7 @@
 
           <input type="text" 
             class="form-control" 
-            [ngClass]="{'is-invalid': f.amountOfPeople.errors && f.amountOfPeople.touched}"                        
+            [ngClass]="cssValidator(f.amountOfPeople)"                      
             formControlName="amountOfPeople" 
             placeholder="Qdt Pessoas"
           >
@@ -92,7 +94,7 @@
           
           <input type="text" 
             class="form-control" 
-            [ngClass]="{'is-invalid': f.phone.errors && f.phone.touched}"                                    
+            [ngClass]="cssValidator(f.phone)"                                     
             formControlName="phone" 
             placeholder="(000) 90000-0000"
           >
@@ -108,7 +110,7 @@
 
           <input type="text" 
             class="form-control" 
-            [ngClass]="{'is-invalid': f.email.errors && f.email.touched}"                                                
+            [ngClass]="cssValidator(f.email)"                                                 
             formControlName="email" 
             placeholder="Email"
           >
@@ -128,7 +130,7 @@
 
           <input type="text" 
             class="form-control" 
-            [ngClass]="{'is-invalid': f.imageUrl.errors && f.imageUrl.touched}"                                                            
+            [ngClass]="cssValidator(f.imageUrl)"                                                              
             formControlName="imageUrl" 
             placeholder="Imagem URL"
           >
@@ -145,7 +147,7 @@
         <button class="btn btn-outline-secondary mr-auto border" (click)= "resetForm()">
           Cancelar Alteração
         </button>
-        <button class="btn btn-success">
+        <button class="btn btn-success" (click)="saveEvent()">
           <!--<span class="spinner-border spinner-border-sm mr-1"></span>-->
           Salvar Evento
         </button>
